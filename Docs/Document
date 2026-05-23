@@ -1,1 +1,368 @@
+# Custom FPV Drone With Handmade Radio System
+
+
+
+This project is a custom FPV drone where the communication system is built from scratch while the flight system uses professional FPV hardware.
+
+Instead of using a normal RC transmitter and receiver, this drone uses:
+
+* a custom Arduino Nano transmitter
+* a custom Arduino Nano receiver
+* NRF24L01 wireless communication
+
+The drone itself still uses a real Betaflight flight controller and ESC setup for stable flying.
+
+This approach makes the project much more practical and achievable for beginners because the difficult part of drone stabilization is already handled by Betaflight.
+
+The main focus of this project is learning:
+
+* FPV technology
+* drone electronics
+* wireless communication
+* RC systems
+* embedded systems
+* PCB design
+
+
+---
+
+# Why This Project Was Designed This Way
+
+At the beginning, there was confusion about whether to build:
+
+* a fully custom drone
+  or
+* only a custom radio system.
+
+After researching how real FPV drones work, it became clear that building a complete custom flight controller as a beginner is very difficult and unreliable.
+
+A modern FPV drone needs:
+
+* fast gyro processing
+* stable PID loops
+* ESC timing
+* sensor filtering
+* failsafe systems
+
+Trying to build all of this from scratch usually causes:
+
+* unstable flight
+* constant crashes
+* debugging problems
+* failed projects
+
+Because of this, the final design uses:
+
+* a professional Betaflight flight controller
+* a professional ESC stack
+* standard FPV hardware
+
+while only customizing:
+
+* transmitter
+* receiver
+* wireless communication
+
+This gives a much higher chance of success.
+
+---
+
+# Main Idea Of The Project
+
+The drone works exactly like a normal FPV drone, but instead of using a FlySky or ELRS receiver, it uses a custom-built receiver.
+
+The communication chain looks like this:
+
+
+Hand Movement
+     ↓
+Custom Transmitter
+(Arduino Nano + NRF24)
+     ↓
+Wireless Signal
+     ↓
+Custom Receiver
+(Arduino Nano + NRF24)
+     ↓
+PWM Signals
+     ↓
+PWM to SBUS Converter
+     ↓
+Velox Cine F7 Flight Controller
+     ↓
+Velox V50A 4in1 ESC
+     ↓
+Brushless Motors
+
+
+The flight controller only sees a normal SBUS receiver input.
+
+It does not know whether the receiver is:
+
+* FlySky
+* FrSky
+* ELRS
+* custom-made
+
+As long as valid SBUS data reaches the flight controller, the drone can fly normally.
+
+---
+
+# Why PWM To SBUS Conversion Is Used
+
+During the project planning, two receiver methods were considered:
+
+## Method 1
+
+Direct SBUS generation using ESP32 or Arduino.
+
+## Method 2
+
+Generate PWM channels first and then convert them into SBUS using a converter board.
+
+The second method was chosen because:
+
+* easier for beginners
+* simpler coding
+* more stable
+* easier debugging
+* already proven in reference drone projects
+
+The reference YouTube projects also used this same architecture.
+
+Instead of generating complex SBUS packets directly in software, the Arduino Nano simply creates standard PWM signals.
+
+A PWM to SBUS converter then changes these signals into SBUS format for Betaflight.
+
+This makes development much easier.
+
+---
+
+# Why Arduino Nano Was Selected
+
+Initially ESP32 was considered for the transmitter and receiver.
+
+But after studying the reference projects carefully, Arduino Nano became the better option for this specific build.
+
+Reasons:
+
+* simpler development
+* easier PWM generation
+* stable timing behavior
+* huge amount of tutorials and community support
+* already proven in many DIY RC systems
+
+Since the project goal is successful flying rather than advanced features, Arduino Nano is enough for this version.
+
+ESP32 may still be useful in future upgrades for:
+
+* telemetry
+* OLED interfaces
+* long range systems
+* advanced protocols
+
+---
+
+# Flight Controller Selection
+
+The project uses:
+
+## T-Motor Velox Cine F7 Flight Controller
+
+with:
+
+## Velox V50A 4in1 ESC
+
+This stack was selected because:
+
+* reliable
+* beginner friendly
+* Betaflight compatible
+* clean wiring
+* multiple UART ports
+* good ESC current rating
+
+The Velox F7 does not have a dedicated pad labeled “SBUS”, but modern F7 flight controllers use UART RX pads for SBUS receivers.
+
+The SBUS signal from the converter is connected to:
+
+## RX2 UART pad
+
+inside Betaflight:
+
+* Serial RX is enabled on UART2
+* receiver protocol is set to SBUS
+
+This allows the custom receiver to work like a standard RC receiver.
+
+---
+
+# Why A 4in1 ESC Was Chosen
+
+At first there was confusion between:
+
+* separate ESCs
+  or
+* 4in1 ESC board.
+
+The final choice was:
+
+## 4in1 ESC.
+
+Reasons:
+
+* cleaner build
+* easier wiring
+* lighter weight
+* fewer solder joints
+* easier debugging
+* modern FPV standard
+
+The Velox V50A ESC is powerful enough for:
+
+* 2207 motors
+* 5 inch propellers
+* 4S LiPo batteries
+
+This combination is very common in freestyle FPV drones.
+
+---
+
+# Motor And Battery Setup
+
+The selected setup is:
+
+| Component | Selection        |
+| --------- | ---------------- |
+| Motors    | 2207 1750KV      |
+| Props     | 5 inch tri-blade |
+| Battery   | 4S 1500mAh LiPo  |
+
+This setup gives:
+
+* stable flying
+* enough freestyle power
+* manageable control for beginners
+
+6S batteries were avoided because:
+
+* more aggressive power
+* harder tuning
+* less beginner-friendly
+
+4S is safer for learning.
+
+---
+
+# NRF24 Communication System
+
+The transmitter and receiver use:
+
+## NRF24L01+ PA LNA modules
+
+The PA LNA version was selected because:
+
+* stronger signal
+* external antenna
+* better range
+* more stable communication
+
+One important thing discovered during research:
+NRF24 modules are sensitive to unstable power.
+
+Because of this:
+
+## capacitors must be added.
+
+A:
+
+* 10uF
+  or
+* 47uF capacitor
+
+is connected between:
+
+* VCC
+* GND
+
+near the NRF24 module.
+
+Without this capacitor:
+
+* random disconnects
+* unstable signals
+* communication failure
+
+can happen.
+
+This is one of the most common mistakes in NRF24 projects.
+
+---
+
+# Why Analog Joysticks Were Chosen
+
+Hall effect gimbals were considered initially.
+
+But for the first version:
+
+## simple analog joysticks are enough.
+
+Reasons:
+
+* cheaper
+* easier to find
+* already used in many DIY projects
+* good enough for testing and learning
+
+Although hall gimbals are smoother and more precise, analog joysticks are acceptable for a beginner FPV project.
+
+---
+
+# Project Development Strategy
+
+One very important decision in this project:
+
+## prototype first before PCB.
+
+The transmitter and receiver should first be tested using:
+
+* breadboards
+* jumper wires
+* prototype boards
+
+The communication system must be verified before designing PCBs.
+
+Testing order:
+
+1. Verify joystick readings
+2. Verify NRF24 communication
+3. Verify receiver PWM outputs
+4. Verify PWM to SBUS conversion
+5. Verify Betaflight channel movement
+6. Test motor response without propellers
+7. Final flight testing
+
+Skipping this process can cause expensive PCB mistakes.
+
+---
+
+
+
+# Final Conclusion
+
+This project is not just a simple Arduino drone.
+
+It is a real FPV drone using a custom-built radio communication system.
+
+By combining:
+
+* Betaflight flight control
+* professional FPV hardware
+* custom transmitter and receiver
+
+the project becomes both:
+
+* educational
+* practically achievable
+
 
