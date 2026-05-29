@@ -1,90 +1,55 @@
-# Custom-FPV-Drone-
-# Custom FPV Drone With Handmade Radio System
+## Custom FPV Drone
 
-This project is a custom FPV freestyle drone using a handmade transmitter and receiver while keeping the flight system based on Betaflight for stability and reliability.
+Trying to build a FPV drone with custom transmitter and receiver using Arduino Nano and NRF24L01 modules.
 
-The main goal of this project is to replace the normal RC transmitter and receiver with a custom communication system.
-
-The drone uses:
-- Arduino Nano based transmitter
-- Arduino Nano based receiver
-- NRF24L01 wireless communication
-- PWM to SBUS conversion
-- Velox Cine F7 Flight Controller
-- Velox V50A 4in1 ESC
-- Analog FPV system
-
----
-
-# Project Idea
-
-Instead of building a complete custom flight controller, this project keeps the drone stabilization system professional and only customizes the radio communication part.
-
-Betaflight handles:
-- stabilization
-- gyro processing
-- PID control
-- ESC communication
-
-The custom radio system handles:
-- joystick inputs
-- wireless communication
-- PWM channel generation
-
-This gives a much higher success rate for beginners.
-
----
-
-# System Architecture
+Using Betaflight flight controller for stable flying instead of making everything from scratch.
 
 
-Hand Movement
-     ↓
-Custom Transmitter
-(Arduino Nano + NRF24)
-     ↓
-Wireless Communication
-     ↓
-Custom Receiver
-(Arduino Nano + NRF24)
-     ↓
-PWM Outputs
-     ↓
-PWM to SBUS Converter
-     ↓
-Velox Cine F7 Flight Controller
-     ↓
+# Parts Used
+
+Arduino Nano
+
+NRF24L01 + PA LNA
+
+Velox Cine F7 FC
+
 Velox V50A 4in1 ESC
-     ↓
-Brushless Motors
 
----
+Velox 2207 1750kv motors
 
-# Components Used
+PWM to SBUS converter
 
-## Drone Electronics
+Analog joysticks
 
-| Components.       | Model |
-|---                |---|
-| Flight Controller | Velox Cine F7 |
-| ESC.              | Velox V50A 4in1 ESC |
-| Motors.           | 2207 2450KV Brushless Motors |
-| Propellers        | 5 Inch Tri-Blade Props |
-| Battery.          | 6s 2200mAh LiPo |
-| FPV Camera.       | Runcam Phoenix 2 |
-| VTX.              | Eachine TX805 |
-| Frame.            | 5 Inch Carbon Fiber Frame |
+
+# Current Work
+
+transmitter schematic done
+
+receiver schematic done
+
+PCB layouts designed
+
+testing communication
 
 
 
----
+## Images
+
+
+TX Schematic
+<img width="1536" height="864" alt="6CH-TX-SHEMATIC-1536x864" src="https://github.com/user-attachments/assets/26d4d1fc-aead-4c7a-b16f-43371fb736ab" />
+
+
+TX PCB
+<img width="1536" height="864" alt="6CH-TX-PCB-1536x864" src="https://github.com/user-attachments/assets/ca49c96b-fbed-45fb-a39b-11ecb632ec81" />
 
 
 
----
+RX Schematic
+<img width="1536" height="864" alt="6CH-RX-SHEMATIC-1536x864" src="https://github.com/user-attachments/assets/93c16b3c-ddf8-4438-b0a9-7ae1281f15c4" />
 
-# Disclaimer
 
-This project uses LiPo batteries and high speed brushless motors.
+RX PCB
+<img width="1536" height="864" alt="6CH-RX-PCB-1536x864" src="https://github.com/user-attachments/assets/a12d27f7-e2eb-4410-b073-aaf0c72702af" />
 
-Always follow proper safety precautions during testing and flying.
